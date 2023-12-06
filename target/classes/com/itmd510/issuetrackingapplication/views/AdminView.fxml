@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.itmd510.issuetrackingapplication.controllers.AdminController"
+            prefHeight="400.0" prefWidth="600.0">
+
+    <VBox spacing="10" alignment="CENTER">
+        <Label text="Admin Dashboard" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
+
+        <HBox spacing="10">
+            <Button fx:id="manageUsersButton" text="Manage Users" onAction="#handleManageUsers"/>
+            <Button fx:id="manageProjectsButton" text="Manage Projects" onAction="#handleManageProjects"/>
+            <Button fx:id="generateReportsButton" text="Generate Reports" onAction="#handleGenerateReports"/>
+            <Button fx:id="logoutButton" text="Logout" onAction="#handleLogout"/>
+        </HBox>
+
+    </VBox>
+
+</AnchorPane>

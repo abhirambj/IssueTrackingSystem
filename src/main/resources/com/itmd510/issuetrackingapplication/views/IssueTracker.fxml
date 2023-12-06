@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.itmd510.issuetrackingapplication.controllers.IssueTrackingController">
+    <stylesheets>
+        <URL value="@../css/style.css" />
+    </stylesheets>
+    <children>
+        <VBox spacing="10" alignment="CENTER">
+            <Label text="Issue Tracking System" styleClass="header-label"/>
+
+            <TableView fx:id="issueTable" prefHeight="400.0" prefWidth="600.0" styleClass="table-view">
+                <columns>
+                    <TableColumn fx:id="idColumn" prefWidth="60.0" text="ID" />
+                    <TableColumn fx:id="titleColumn" prefWidth="150.0" text="Title" />
+                    <TableColumn fx:id="descriptionColumn" prefWidth="250.0" text="Description" />
+                    <TableColumn fx:id="statusColumn" prefWidth="80.0" text="Status" />
+                    <TableColumn fx:id="createdAtColumn" prefWidth="120.0" text="Created At" />
+                    <TableColumn fx:id="userIdColumn" prefWidth="60" text="User ID" />
+                </columns>
+            </TableView>
+
+            <HBox spacing="10">
+                <Label text="Title:" />
+                <TextField fx:id="titleField" prefWidth="150.0" promptText="Enter Title" styleClass="text-input" />
+            </HBox>
+
+            <HBox spacing="10">
+                <Label text="Description:" />
+                <TextArea fx:id="descriptionArea" prefWidth="250.0" promptText="Enter Description" styleClass="text-area" />
+            </HBox>
+
+            <HBox spacing="10">
+                <Label text="Status:" />
+                <TextField fx:id="statusField" prefWidth="150.0" promptText="Enter Status" styleClass="text-input" />
+            </HBox>
+
+            <HBox spacing="10">
+                <Label text="Select User:" />
+                <ComboBox fx:id="userComboBox" prefWidth="150.0" promptText="Select User" styleClass="combo-box" />
+            </HBox>
+
+            <HBox spacing="10">
+                <Button onAction="#handleAddIssue" text="Add Issue" styleClass="button" />
+                <Button onAction="#handleUpdateIssue" text="Update Issue" styleClass="button" />
+                <Button onAction="#handleDeleteIssue" text="Delete Issue" styleClass="button" />
+            </HBox>
+        </VBox>
+    </children>
+</AnchorPane>

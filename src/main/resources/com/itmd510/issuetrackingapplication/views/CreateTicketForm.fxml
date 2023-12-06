@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane fx:id="createTicketForm" prefHeight="300.0" prefWidth="400.0" style="-fx-background-color: #191d45;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.itmd510.issuetrackingapplication.controllers.CreateTicketFormController">
+    <children>
+        <VBox layoutX="20.0" layoutY="20.0" prefHeight="260.0" prefWidth="360.0" spacing="10.0" style="-fx-padding: 20;">
+            <children>
+                <Label text="Title" style="-fx-text-fill: white;" />
+                <TextField fx:id="titleField" style="-fx-background-color: #fff;" />
+                <Label text="Description" style="-fx-text-fill: white;" />
+                <TextField fx:id="descriptionField" style="-fx-background-color: #fff;" />
+                <Label text="Status" style="-fx-text-fill: white;" />
+                <TextField fx:id="statusField" style="-fx-background-color: #fff;" disable="true" />
+                <Label text="Username" style="-fx-text-fill: white;" />
+                <TextField fx:id="userNameField" style="-fx-background-color: #fff;" disable="true" />
+            </children>
+        </VBox>
+
+        <!-- HBox for the Submit button -->
+        <HBox layoutX="20.0" layoutY="280.0" prefHeight="30.0" prefWidth="360.0" spacing="10.0" style="-fx-padding: 10;">
+            <children>
+                <!-- Set Hgrow to ALWAYS to push the button to the right -->
+                <Button text="Submit" onAction="#handleSubmit" style="-fx-background-color: #6870d3; -fx-text-fill: white; -fx-padding: 8 15 8 15;" HBox.hgrow="ALWAYS" />
+            </children>
+        </HBox>
+    </children>
+</AnchorPane>

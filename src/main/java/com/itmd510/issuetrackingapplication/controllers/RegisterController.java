@@ -3,9 +3,13 @@ package com.itmd510.issuetrackingapplication.controllers;
 import com.itmd510.issuetrackingapplication.DB.DBConnector;
 import com.itmd510.issuetrackingapplication.config.ConfigLoader;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
@@ -56,7 +60,7 @@ public class RegisterController extends BaseController {
                 ConfigLoader.getDatabaseUser(),
                 ConfigLoader.getDatabasePassword());
                 PreparedStatement preparedStatement = connection.prepareStatement(
-                        "INSERT INTO users (username, password, role_id, email) VALUES (?, ?, (SELECT role_id FROM roles WHERE role_name = 'User'), ?)")) {
+                        "INSERT INTO users (username, password, roleId, email) VALUES (?, ?, (SELECT role_id FROM roles WHERE role_name = 'User'), ?)")) {
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, hashedPassword);
             preparedStatement.setString(3, email);
@@ -68,6 +72,29 @@ public class RegisterController extends BaseController {
         }
         return false;
     }
+
+    @FXML
+    private void handleBackToLogin() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/itmd510/issuetrackingapplication/views/LoginView.fxml"));
+            Parent root = loader.load();
+
+            // Get the controller for the login view
+            LoginController loginController = loader.getController();
+
+            // Set the stage reference in the login controller
+            loginController.setStage(getStage());
+
+            // Show the login stage
+            getStage().setScene(new Scene(root));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     private String hashPassword(String password) {
         try {

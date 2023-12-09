@@ -7,26 +7,27 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="createTicketForm" prefHeight="300.0" prefWidth="400.0" style="-fx-background-color: #191d45;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.itmd510.issuetrackingapplication.controllers.CreateTicketFormController">
+<AnchorPane fx:id="createTicketForm" prefHeight="418.0" prefWidth="423.0" style="-fx-background-color: #191d45;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.itmd510.issuetrackingapplication.controllers.CreateTicketFormController">
     <children>
-        <VBox layoutX="20.0" layoutY="20.0" prefHeight="260.0" prefWidth="360.0" spacing="10.0" style="-fx-padding: 20;">
+        <VBox layoutX="32.0" layoutY="16.0" prefHeight="260.0" prefWidth="360.0" spacing="10.0" style="-fx-padding: 20;">
             <children>
-                <Label text="Title" style="-fx-text-fill: white;" />
+                <Label style="-fx-text-fill: white;" text="Title" />
                 <TextField fx:id="titleField" style="-fx-background-color: #fff;" />
-                <Label text="Description" style="-fx-text-fill: white;" />
+                <Label style="-fx-text-fill: white;" text="Description" />
                 <TextField fx:id="descriptionField" style="-fx-background-color: #fff;" />
-                <Label text="Status" style="-fx-text-fill: white;" />
-                <TextField fx:id="statusField" style="-fx-background-color: #fff;" disable="true" />
-                <Label text="Username" style="-fx-text-fill: white;" />
-                <TextField fx:id="userNameField" style="-fx-background-color: #fff;" disable="true" />
+                <Label style="-fx-text-fill: white;" text="Status" />
+                <TextField fx:id="statusField" disable="true" style="-fx-background-color: #fff;" />
+                <Label style="-fx-text-fill: white;" text="Assignee" />
+                <TextField fx:id="userNameField" disable="true" style="-fx-background-color: #fff;" />
+                <Label style="-fx-text-fill: white;" text="Reports To" />
+                <TextField fx:id="managerField" disable="true" style="-fx-background-color: #fff;" />
             </children>
         </VBox>
 
         <!-- HBox for the Submit button -->
-        <HBox layoutX="20.0" layoutY="280.0" prefHeight="30.0" prefWidth="360.0" spacing="10.0" style="-fx-padding: 10;">
+        <HBox layoutX="43.0" layoutY="350.0" prefHeight="53.0" prefWidth="349.0" spacing="10.0" style="-fx-padding: 10;">
             <children>
-                <!-- Set Hgrow to ALWAYS to push the button to the right -->
-                <Button fx:id="submitButton" text="Submit" onAction="#handleSubmit" style="-fx-background-color: #6870d3; -fx-text-fill: white; -fx-padding: 8 15 8 15;" HBox.hgrow="ALWAYS" />
+                <Button fx:id="submitButton" onAction="#handleSubmit" prefHeight="33.0" prefWidth="319.0" style="-fx-background-color: #6870d3; -fx-text-fill: white; -fx-padding: 8 15 8 15;" text="Submit" HBox.hgrow="ALWAYS" />
             </children>
         </HBox>
     </children>

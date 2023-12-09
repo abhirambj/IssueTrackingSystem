@@ -26,7 +26,7 @@
         <HBox layoutX="20.0" layoutY="280.0" prefHeight="30.0" prefWidth="360.0" spacing="10.0" style="-fx-padding: 10;">
             <children>
                 <!-- Set Hgrow to ALWAYS to push the button to the right -->
-                <Button text="Submit" onAction="#handleSubmit" style="-fx-background-color: #6870d3; -fx-text-fill: white; -fx-padding: 8 15 8 15;" HBox.hgrow="ALWAYS" />
+                <Button fx:id="submitButton" text="Submit" onAction="#handleSubmit" style="-fx-background-color: #6870d3; -fx-text-fill: white; -fx-padding: 8 15 8 15;" HBox.hgrow="ALWAYS" />
             </children>
         </HBox>
     </children>

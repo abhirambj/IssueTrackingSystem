@@ -10,15 +10,15 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="837.0" prefWidth="1126.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.itmd510.issuetrackingapplication.controllers.RegisterController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="903.0" prefWidth="1338.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.itmd510.issuetrackingapplication.controllers.RegisterController">
     <children>
-        <BorderPane prefHeight="837.0" prefWidth="1126.0" style="-fx-background-color: #fff;">
+        <BorderPane prefHeight="904.0" prefWidth="1340.0" style="-fx-background-color: #fff;">
             <center>
-                <Pane prefHeight="606.0" prefWidth="1126.0" style="-fx-background-color: #191d45;" BorderPane.alignment="CENTER">
+                <Pane prefHeight="909.0" prefWidth="1346.0" style="-fx-background-color: #191d45;" BorderPane.alignment="CENTER">
                     <children>
-                        <Pane layoutX="141.0" layoutY="131.0" prefHeight="576.0" prefWidth="845.0" style="-fx-background-color: #6870d3; -fx-background-radius: 30px;">
+                        <Pane layoutX="208.0" layoutY="152.0" prefHeight="626.0" prefWidth="939.0" style="-fx-background-color: #6870d3; -fx-background-radius: 30px;">
                             <children>
-                                <StackPane layoutX="480.0" layoutY="15.0" prefHeight="547.0" prefWidth="352.0" style="-fx-background-color: #fff; -fx-background-radius: 30px;">
+                                <StackPane layoutX="549.0" layoutY="40.0" prefHeight="547.0" prefWidth="352.0" style="-fx-background-color: #fff; -fx-background-radius: 30px;">
                                     <children>
                                         <Pane prefHeight="547.0" prefWidth="360.0">
                                             <children>

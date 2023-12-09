@@ -1,26 +1,30 @@
 package com.itmd510.issuetrackingapplication.controllers;
 
+import com.itmd510.issuetrackingapplication.DB.DBConnector;
+import com.itmd510.issuetrackingapplication.config.ConfigLoader;
+import com.itmd510.issuetrackingapplication.config.SessionManager;
+import com.itmd510.issuetrackingapplication.models.Issue;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-
-import com.itmd510.issuetrackingapplication.DB.DBConnector;
-import com.itmd510.issuetrackingapplication.config.ConfigLoader;
-import com.itmd510.issuetrackingapplication.config.SessionManager;
-import com.itmd510.issuetrackingapplication.models.Issue;
-
-import javafx.fxml.FXML;
-import javafx.scene.control.TextField;
+import java.util.Objects;
 
 public class CreateTicketFormController {
 
     @FXML
-    private TextField titleField;
+    public TextField titleField;
 
     @FXML
-    private TextField descriptionField;
+    public TextField descriptionField;
 
     @FXML
     private TextField statusField;
@@ -28,15 +32,54 @@ public class CreateTicketFormController {
     @FXML
     private TextField userNameField;
 
+    @FXML
+    private Button submitButton; // Added reference to the submit button
+
+    private BaseController parentController;
+
+    private Stage formStage; // Reference to the form stage
+
+    public void setParentController(BaseController parentController) {
+        this.parentController = Objects.requireNonNull(parentController, "parentController must not be null");
+    }
+
+    @FXML
+    private void handleCreateTicket() {
+        // Existing code
+
+        // Notify the parent controller to refresh UI
+        if (parentController != null) {
+            if (parentController instanceof UserController) {
+                ((UserController) parentController).refreshUI();
+            } else if (parentController instanceof ManagerController) {
+                ((ManagerController) parentController).refreshUI();
+            }
+        }
+
+        // Close the form
+        Stage stage = (Stage) formStage.getScene().getWindow();
+        stage.close();
+    }
+
+    public void setFormStage(Stage formStage) {
+        this.formStage = formStage;
+    }
+
     public void initialize() {
         // Set default values and disable the fields
         statusField.setText("To Do");
         statusField.setDisable(true);
-
-        // Set the currently logged-in user's username
-        // Assuming you have a way to access the currently logged-in user's username
         userNameField.setText(SessionManager.getInstance().getLoggedInUsername());
         userNameField.setDisable(true);
+
+        // Bind the disable property of the submit button to a BooleanBinding
+        BooleanBinding disableSubmitButton = Bindings.createBooleanBinding(
+                () -> titleField.getText().isEmpty() || descriptionField.getText().isEmpty(),
+                titleField.textProperty(),
+                descriptionField.textProperty()
+        );
+
+        submitButton.disableProperty().bind(disableSubmitButton);
     }
 
     @FXML
@@ -64,20 +107,9 @@ public class CreateTicketFormController {
             newIssue.setUserId(userId);
             newIssue.setUserName(assignee);
 
-            // Print the values before storing
-            System.out.println("Title: " + newIssue.getTitle());
-            System.out.println("Description: " + newIssue.getDescription());
-            System.out.println("Status: " + newIssue.getStatus());
-            System.out.println("Assignee: " + newIssue.getAssignee());
-            System.out.println("Created At: " + newIssue.getCreatedAt());
-            System.out.println("User ID: " + newIssue.getUserId());
-            System.out.println("User Name: " + newIssue.getUserName());
-
-            // Add the issue to the database
+            System.out.println(newIssue);
             newIssue.addIssue();
-
-            // Optionally, you can close the form or perform other actions after submission
-            // You might use a popup, dialog, or transition to show/hide the form
+            formStage.close();
         } else {
             System.out.println("User not found. Please specify a valid user.");
         }
@@ -86,8 +118,8 @@ public class CreateTicketFormController {
     private int getUserIdByUserName(String userName) {
         try (Connection connection = DBConnector.getConnection(ConfigLoader.getDatabaseUrl(),
                 ConfigLoader.getDatabaseUser(), ConfigLoader.getDatabasePassword());
-                PreparedStatement preparedStatement = connection
-                        .prepareStatement("SELECT userId FROM users WHERE username = ?")) {
+             PreparedStatement preparedStatement = connection
+                     .prepareStatement("SELECT userId FROM users WHERE username = ?")) {
 
             preparedStatement.setString(1, userName);
 

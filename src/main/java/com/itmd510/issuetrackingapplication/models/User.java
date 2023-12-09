@@ -1,20 +1,66 @@
 package com.itmd510.issuetrackingapplication.models;
 
+import com.itmd510.issuetrackingapplication.DB.DBConnector;
+import com.itmd510.issuetrackingapplication.config.ConfigLoader;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 public class User {
+    private String userId;
     private String username;
     private String password;
-    private String role;
+    private String roleId;
     private String email;
 
-    public User(String username, String password, String role) {
+    public User() {
         // Default constructor
     }
 
-    public User(String username, String password, String role, String email) {
+    public User(String username, String password, String roleId, String email) {
         this.username = username;
         this.password = password;
-        this.role = role;
+        this.roleId = roleId;
         this.email = email;
+    }
+
+    public User(int userId, String username, String password, String roleId, String email) {
+        this.userId = String.valueOf(userId);
+        this.username = username;
+        this.password = password;
+        this.roleId = roleId;
+        this.email = email;
+    }
+
+    public static List<User> getAllUsers() {
+        List<User> userList = new ArrayList<>();
+
+        try (Connection connection = DBConnector.getConnection(ConfigLoader.getDatabaseUrl(),
+                ConfigLoader.getDatabaseUser(), ConfigLoader.getDatabasePassword());
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM users");
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            while (resultSet.next()) {
+                int userId = resultSet.getInt("userId");
+                String username = resultSet.getString("username");
+                String password = resultSet.getString("password");
+                String roleId = resultSet.getString("roleId");
+                String email = resultSet.getString("email");
+
+                User user = new User(userId, username, password, roleId, email);
+                userList.add(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return userList;
     }
 
     public String getUsername() {
@@ -33,12 +79,12 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
-        return role;
+    public String getRoleId() {
+        return roleId;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRoleId(String roleId) {
+        this.roleId = roleId;
     }
 
     public String getEmail() {
@@ -48,4 +94,113 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public void deleteUser() {
+        try (Connection connection = DBConnector.getConnection(
+                ConfigLoader.getDatabaseUrl(),
+                ConfigLoader.getDatabaseUser(),
+                ConfigLoader.getDatabasePassword());
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     "DELETE FROM users WHERE userId = ?")) {
+            preparedStatement.setInt(1, Integer.parseInt(userId));
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                // Deletion successful
+                System.out.println("User deleted successfully");
+            } else {
+                // No rows affected, user not found
+                System.out.println("User not found or deletion unsuccessful");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle the SQL exception appropriately, e.g., log or throw a custom exception
+        }
+    }
+
+
+    public void updateUser() {
+        try (Connection connection = DBConnector.getConnection(
+                ConfigLoader.getDatabaseUrl(),
+                ConfigLoader.getDatabaseUser(),
+                ConfigLoader.getDatabasePassword());
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     "UPDATE users SET username = ?, password = ?, roleId = (SELECT roleId FROM roles WHERE role_name = ?), email = ? WHERE userId = ?")) {
+            preparedStatement.setString(1, username);
+            String hashedPassword = hashPassword(password);
+            preparedStatement.setString(2, hashedPassword);
+            preparedStatement.setString(3, roleId);
+            preparedStatement.setString(4, email);
+            preparedStatement.setInt(5, Integer.parseInt(userId));
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                // Update successful
+                System.out.println("User updated successfully");
+            } else {
+                // No rows affected, user not found
+                System.out.println("User not found or update unsuccessful");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle the SQL exception appropriately, e.g., log or throw a custom exception
+        }
+    }
+
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public boolean addUser(String username, String password, String roleId, String email) {
+        try (Connection connection = DBConnector.getConnection(
+                ConfigLoader.getDatabaseUrl(),
+                ConfigLoader.getDatabaseUser(),
+                ConfigLoader.getDatabasePassword());
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     "INSERT INTO users (username, password, roleId, email) VALUES (?, ?, (SELECT roleId FROM roles WHERE role_name = ?), ?)")) {
+            preparedStatement.setString(1, username);
+
+            // Hash the password before setting it in the statement
+            String hashedPassword = hashPassword(password);
+            preparedStatement.setString(2, hashedPassword);
+
+            preparedStatement.setString(3, roleId);
+            preparedStatement.setString(4, email);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle the SQL exception appropriately, e.g., log or throw a custom exception
+            return false;
+        }
+    }
+
+    private String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(password.getBytes());
+            byte[] byteData = md.digest();
+
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : byteData) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) {
+                    hexString.append('0');
+                }
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
 }

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Pos?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.FontWeight?>
+<?import javafx.scene.text.Text?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.itmd510.issuetrackingapplication.controllers.IssueCardController"
+      spacing="10" style="-fx-background-radius: 10; -fx-background-color: #f4f4f4; -fx-padding: 15;">
+
+    <StackPane style="-fx-background-color: #6870d3; -fx-background-radius: 10; -fx-padding: 15;" onMouseClicked="#handleCardClicked">
+        <VBox spacing="8" style="-fx-padding: 10;">
+            <HBox alignment="CENTER_LEFT" spacing="5">
+                <Label style="-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: WHITE;" text="Issue ID:"/>
+                <Text fx:id="issueIdText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Text>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="5">
+                <Label style="-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: WHITE;" text="Title:"/>
+                <Text fx:id="titleText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Text>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="5">
+                <Label style="-fx-font-weight: bold; -fx-font-size: 12; -fx-text-fill: WHITE;" text="Description:"/>
+                <Text fx:id="descriptionText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0">
+                    <font>
+                        <Font size="12.0" />
+                    </font>
+                </Text>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="5">
+                <Label style="-fx-font-weight: bold; -fx-font-size: 12; -fx-text-fill: WHITE;" text="Status:"/>
+                <Text fx:id="statusText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0">
+                    <font>
+                        <Font size="12.0" />
+                    </font>
+                </Text>
+            </HBox>
+        </VBox>
+        <ImageView fx:id="deleteIcon" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true"
+                   StackPane.alignment="BOTTOM_RIGHT">
+            <Image url="@../images/delete-icon.png"/>
+        </ImageView>
+    </StackPane>
+</VBox>

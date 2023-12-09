@@ -25,8 +25,8 @@ public class AuthService {
                 return new User(
                         resultSet.getString("username"),
                         resultSet.getString("password"),
-                        resultSet.getString("role")
-                );
+                        resultSet.getString("roleId"),
+                        resultSet.getString("email"));
             }
 
         } catch (SQLException e) {

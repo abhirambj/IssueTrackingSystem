@@ -1,26 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.itmd510.issuetrackingapplication.controllers.AdminController"
-            prefHeight="400.0" prefWidth="600.0">
+<AnchorPane prefHeight="903.0" prefWidth="1338.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.itmd510.issuetrackingapplication.controllers.AdminController">
 
-    <VBox spacing="10" alignment="CENTER">
-        <Label text="Admin Dashboard" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
+    <children>
+        <BorderPane layoutX="-3.0" layoutY="-5.0" prefHeight="909.0" prefWidth="1341.0" style="-fx-background-color: #191d45;">
+            <top>
+                <Pane prefHeight="72.0" prefWidth="1262.0" style="-fx-background-color: #6870d3;" BorderPane.alignment="CENTER">
+                    <children>
+                        <Button fx:id="createButton" layoutX="44.0" layoutY="16.0" mnemonicParsing="false" onAction="#handleCreateTicket" prefHeight="40.0" prefWidth="70.0" style="-fx-background-color: #191d45; -fx-background-radius: 40px;" text="Create" textAlignment="CENTER" textFill="WHITE" />
+                        <Button fx:id="refreshButton" layoutX="1084.0" layoutY="21.0" mnemonicParsing="false" onAction="#handleRefresh" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: #191d45; -fx-background-radius: 40px;" text="Refresh" textAlignment="CENTER" textFill="WHITE" />
+                        <Button fx:id="logoutButton" layoutX="1198.0" layoutY="19.0" mnemonicParsing="false" onAction="#handleLogout" prefHeight="40.0" prefWidth="105.0" style="-fx-background-color: #191d45; -fx-background-radius: 40px;" text="Logout" textAlignment="CENTER" textFill="WHITE" />
+                        <Button fx:id="manageUsersButton" layoutX="255.0" layoutY="16.0" onAction="#handleManageUsers" prefHeight="40.0" prefWidth="119.0" style="-fx-background-color: #191d45; -fx-background-radius: 40px;" text="Manage Users" textAlignment="CENTER" textFill="WHITE" />
+                        <Button fx:id="manageProjectsButton" layoutX="127.0" layoutY="16.0" onAction="#handleManageProjects" prefHeight="40.0" prefWidth="118.0" style="-fx-background-color: #191d45; -fx-background-radius: 40px;" text="Manage Projects" textAlignment="CENTER" textFill="WHITE" />
+                    </children>
+                </Pane>
+            </top>
+            <center>
+                <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #191d45;" BorderPane.alignment="CENTER">
+                    <children>
+                        <TitledPane fx:id="todoPane" animated="false" layoutX="62.0" layoutY="100.0" prefHeight="645.0" prefWidth="383.0" text="TODO">
+                            <content>
+                                <ScrollPane fitToHeight="true" fitToWidth="true">
+                                    <content>
+                                        <VBox fx:id="todoPaneContent" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                    </content>
+                                </ScrollPane>
+                            </content>
+                        </TitledPane>
 
-        <HBox spacing="10">
-            <Button fx:id="manageUsersButton" text="Manage Users" onAction="#handleManageUsers"/>
-            <Button fx:id="manageProjectsButton" text="Manage Projects" onAction="#handleManageProjects"/>
-            <Button fx:id="generateReportsButton" text="Generate Reports" onAction="#handleGenerateReports"/>
-            <Button fx:id="logoutButton" text="Logout" onAction="#handleLogout"/>
-        </HBox>
+                        <TitledPane fx:id="inProgressPane" animated="false" layoutX="475.0" layoutY="99.0" prefHeight="645.0" prefWidth="383.0" text="IN PROGRESS">
+                            <content>
+                                <ScrollPane fitToHeight="true" fitToWidth="true">
+                                    <content>
+                                        <VBox fx:id="inProgressPaneContent" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                    </content>
+                                </ScrollPane>
+                            </content>
+                        </TitledPane>
 
-    </VBox>
+                        <TitledPane fx:id="donePane" animated="false" layoutX="889.0" layoutY="99.0" prefHeight="645.0" prefWidth="383.0" text="DONE">
+                            <content>
+                                <ScrollPane fitToHeight="true" fitToWidth="true">
+                                    <content>
+                                        <VBox fx:id="donePaneContent" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                    </content>
+                                </ScrollPane>
+                            </content>
+                        </TitledPane>
+                    </children>
+                </Pane>
+            </center>
+        </BorderPane>
+    </children>
 
 </AnchorPane>

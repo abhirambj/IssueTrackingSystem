@@ -1,5 +1,7 @@
 package com.itmd510.issuetrackingapplication.controllers;
 
+import com.itmd510.issuetrackingapplication.DB.DBConnector;
+import com.itmd510.issuetrackingapplication.config.ConfigLoader;
 import com.itmd510.issuetrackingapplication.config.SessionManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,8 +12,16 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import javafx.scene.Node;
 
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class LoginController extends BaseController {
 
@@ -25,6 +35,11 @@ public class LoginController extends BaseController {
     private Button signInButton;
 
     private SessionManager sessionManager;
+
+    @FXML
+    public void initialize() {
+        sessionManager = SessionManager.getInstance();
+    }
 
     @FXML
     private void handleSignUp() {
@@ -56,6 +71,11 @@ public class LoginController extends BaseController {
 
     @FXML
     private void handleSignIn(ActionEvent event) {
+        if (sessionManager == null) {
+            showAlert("SessionManager is not initialized.");
+            return;
+        }
+
         if (sessionManager.isLoggedIn()) {
             showAlert("A user is already logged in.");
             return;
@@ -67,8 +87,13 @@ public class LoginController extends BaseController {
         if (validateInput(username, password)) {
             String role = authenticateUser(username, password);
 
+            System.out.println(role);
             if (role != null) {
                 sessionManager.login(username);
+
+                // Set the stage for LoginController before calling openUserSpecificView
+                setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
+
                 openUserSpecificView(role);
             } else {
                 showAlert("Invalid username or password.");
@@ -83,10 +108,82 @@ public class LoginController extends BaseController {
     }
 
     private String authenticateUser(String username, String password) {
-        // Replace this with your actual authentication logic, fetching the role from
-        // the database
-        return "user"; // Placeholder role, replace with actual logic
+        // Hash the password before comparing with the database
+        String hashedPassword = hashPassword(password);
+
+        try (Connection connection = DBConnector.getConnection(
+                ConfigLoader.getDatabaseUrl(),
+                ConfigLoader.getDatabaseUser(),
+                ConfigLoader.getDatabasePassword());
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     "SELECT roleId FROM users WHERE username = ? AND password = ?")) {
+
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, hashedPassword);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    String roleId = resultSet.getString("roleId");
+
+                    // Fetch the role_name using roleId from the roles table
+                    String roleName = fetchRoleName(roleId);
+
+                    return roleName;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle the SQL exception appropriately, e.g., log or throw a custom exception
+        }
+
+        return null; // Return null if authentication fails
     }
+
+    private String fetchRoleName(String roleId) {
+        try (Connection connection = DBConnector.getConnection(
+                ConfigLoader.getDatabaseUrl(),
+                ConfigLoader.getDatabaseUser(),
+                ConfigLoader.getDatabasePassword());
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     "SELECT role_name FROM roles WHERE role_id = ?")) {
+
+            preparedStatement.setString(1, roleId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    // Return the role_name
+                    return resultSet.getString("role_name");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle the SQL exception appropriately, e.g., log or throw a custom exception
+        }
+
+        return null; // Return null if roleId is not found or an error occurs
+    }
+
+    private String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(password.getBytes());
+            byte[] byteData = md.digest();
+
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : byteData) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) {
+                    hexString.append('0');
+                }
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
     private void openUserSpecificView(String role) {
         try {

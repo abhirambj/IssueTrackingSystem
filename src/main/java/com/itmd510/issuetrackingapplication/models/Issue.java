@@ -6,8 +6,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Issue {
 
@@ -28,7 +26,7 @@ public class Issue {
     }
 
     public Issue(int issue_id, String title, String description, String status, Timestamp createdAt, int userId,
-            String assignee, String reportsTo) {
+                 String assignee, String reportsTo) {
         this.issue_id = issue_id;
         this.title = title;
         this.description = description;
@@ -37,39 +35,6 @@ public class Issue {
         this.userId = userId;
         this.reportsTo = reportsTo;
         this.assignee = assignee;
-    }
-
-    public static List<Issue> searchIssues(String searchTerm, String currentUser) {
-        List<Issue> searchResults = new ArrayList<>();
-
-        try (Connection connection = DBConnector.getConnection(ConfigLoader.getDatabaseUrl(),
-                ConfigLoader.getDatabaseUser(), ConfigLoader.getDatabasePassword());
-                PreparedStatement preparedStatement = connection.prepareStatement(
-                        "SELECT * FROM issues WHERE (title LIKE ? OR description LIKE ?) AND assignee = (SELECT userId FROM users WHERE username = ?)")) {
-
-            preparedStatement.setString(1, "%" + searchTerm + "%");
-            preparedStatement.setString(2, "%" + searchTerm + "%");
-            preparedStatement.setString(3, currentUser);
-
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    Issue issue = new Issue();
-                    issue.setIssueId(resultSet.getInt("issue_id"));
-                    issue.setTitle(resultSet.getString("title"));
-                    issue.setDescription(resultSet.getString("description"));
-                    issue.setStatus(resultSet.getString("status"));
-                    issue.setCreatedAt(resultSet.getTimestamp("created_at"));
-                    issue.setUserName(getUserNameByUserId(connection, resultSet.getInt("userId")));
-                    issue.setAssignee(getUserNameByUserId(connection, resultSet.getInt("assignee")));
-                    searchResults.add(issue);
-                }
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return searchResults;
     }
 
     public String getUserName() {
@@ -133,19 +98,18 @@ public class Issue {
 
         try (Connection connection = DBConnector.getConnection(ConfigLoader.getDatabaseUrl(),
                 ConfigLoader.getDatabaseUser(), ConfigLoader.getDatabasePassword());
-                PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM issues");
-                ResultSet resultSet = preparedStatement.executeQuery()) {
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM issues");
+             ResultSet resultSet = preparedStatement.executeQuery()) {
 
             while (resultSet.next()) {
                 Issue issue = new Issue();
-                issue.setIssueId(resultSet.getInt("issue_id"));
+                issue.setIssueId(resultSet.getInt("issueId"));
                 issue.setTitle(resultSet.getString("title"));
                 issue.setDescription(resultSet.getString("description"));
                 issue.setStatus(resultSet.getString("status"));
                 issue.setCreatedAt(resultSet.getTimestamp("created_at"));
-                issue.setUserName(getUserNameByUserId(connection, resultSet.getInt("userId")));
-                issue.setAssignee(getUserNameByUserId(connection, resultSet.getInt("assignee")));
-                issue.setReportsTo(getUserNameByUserId(connection, resultSet.getInt("reports_to")));
+                issue.setAssignee(resultSet.getString("assignee"));
+                issue.setReportsTo(getUserNameByUserId(connection, resultSet.getInt("reportsTo")));
                 issues.add(issue);
             }
 
@@ -158,24 +122,24 @@ public class Issue {
     public static ObservableList<Issue> getIssuesForUser(String username) {
         ObservableList<Issue> issues = FXCollections.observableArrayList();
 
-        String sql = "SELECT * FROM issues WHERE assignee = (SELECT userId FROM users WHERE username = ?)";
+        String sql = "SELECT * FROM issues WHERE assignee = (SELECT username FROM users WHERE username = ?)";
 
         try (Connection connection = DBConnector.getConnection(ConfigLoader.getDatabaseUrl(),
                 ConfigLoader.getDatabaseUser(), ConfigLoader.getDatabasePassword());
-                PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             preparedStatement.setString(1, username);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
                     Issue issue = new Issue();
-                    issue.setIssueId(resultSet.getInt("issue_id"));
+                    issue.setIssueId(resultSet.getInt("issueId"));
                     issue.setTitle(resultSet.getString("title"));
                     issue.setDescription(resultSet.getString("description"));
                     issue.setStatus(resultSet.getString("status"));
                     issue.setCreatedAt(resultSet.getTimestamp("created_at"));
-                    issue.setUserName(getUserNameByUserId(connection, resultSet.getInt("userId")));
-                    issue.setAssignee(getUserNameByUserId(connection, resultSet.getInt("assignee")));
+                    issue.setAssignee(resultSet.getString("assignee"));
+                    issue.setReportsTo(resultSet.getString("reportsTo"));
                     issues.add(issue);
                 }
             }
@@ -200,14 +164,13 @@ public class Issue {
             }
         }
 
-        return null; // Return null or handle it appropriately if the username is not found
+        return null;
     }
 
     public void addIssue() {
         try (Connection connection = DBConnector.getConnection(ConfigLoader.getDatabaseUrl(),
                 ConfigLoader.getDatabaseUser(), ConfigLoader.getDatabasePassword())) {
 
-            // Check if the specified username exists
             int userId = getUserIdByUserName(connection, getAssignee());
 
             if (userId != -1) {
@@ -251,16 +214,15 @@ public class Issue {
     public void updateIssue() {
         try (Connection connection = DBConnector.getConnection(ConfigLoader.getDatabaseUrl(),
                 ConfigLoader.getDatabaseUser(), ConfigLoader.getDatabasePassword());
-                PreparedStatement preparedStatement = connection.prepareStatement(
-                        "UPDATE issues SET title=?, description=?, status=?, assignee=? WHERE issueId=?")) {
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     "UPDATE issues SET title=?, description=?, status=?, assignee=?, reportsTo=? WHERE issueId=?")) {
 
             preparedStatement.setString(1, getTitle());
             preparedStatement.setString(2, getDescription());
             preparedStatement.setString(3, getStatus());
-            preparedStatement.setInt(4, getUserId());
-            preparedStatement.setInt(5, getIssueId());
-            preparedStatement.setString(6, getAssignee());
-            preparedStatement.setString(7, getReportsTo());
+            preparedStatement.setString(4, getAssignee());
+            preparedStatement.setString(5, getReportsTo());
+            preparedStatement.setInt(6, getIssueId());
 
             preparedStatement.executeUpdate();
 
@@ -272,16 +234,23 @@ public class Issue {
     public void deleteIssue() {
         try (Connection connection = DBConnector.getConnection(ConfigLoader.getDatabaseUrl(),
                 ConfigLoader.getDatabaseUser(), ConfigLoader.getDatabasePassword());
-                PreparedStatement preparedStatement = connection.prepareStatement(
-                        "DELETE FROM issues WHERE issueId=?")) {
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     "DELETE FROM issues WHERE issueId=?")) {
 
             preparedStatement.setInt(1, getIssueId());
-            preparedStatement.executeUpdate();
+            int affectedRows = preparedStatement.executeUpdate();
+
+            if (affectedRows > 0) {
+                System.out.println("Issue with ID " + getIssueId() + " deleted successfully.");
+            } else {
+                System.out.println("Issue with ID " + getIssueId() + " not found or couldn't be deleted.");
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 
     public String getAssignee() {
         return assignee;
@@ -298,4 +267,10 @@ public class Issue {
     public void setReportsTo(String reportsTo) {
         this.reportsTo = reportsTo;
     }
+
+    @Override
+    public String toString() {
+        return "Title: " + getTitle() + "\nDescription: " + getDescription() + "\nStatus: " + getStatus();
+    }
+
 }

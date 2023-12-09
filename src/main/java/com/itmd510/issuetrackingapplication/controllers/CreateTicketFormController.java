@@ -9,6 +9,7 @@ import javafx.beans.binding.BooleanBinding;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.sql.Connection;
@@ -25,6 +26,10 @@ public class CreateTicketFormController {
 
     @FXML
     public TextField descriptionField;
+    @FXML
+    public AnchorPane createTicketForm;
+    @FXML
+    public TextField managerField;
 
     @FXML
     private TextField statusField;
@@ -38,6 +43,7 @@ public class CreateTicketFormController {
     private BaseController parentController;
 
     private Stage formStage; // Reference to the form stage
+
 
     public void setParentController(BaseController parentController) {
         this.parentController = Objects.requireNonNull(parentController, "parentController must not be null");
@@ -80,6 +86,10 @@ public class CreateTicketFormController {
         );
 
         submitButton.disableProperty().bind(disableSubmitButton);
+
+        String managerId = getManagerNameForCurrentUser();
+        managerField.setText(managerId);
+        managerField.setDisable(true);
     }
 
     @FXML
@@ -89,6 +99,7 @@ public class CreateTicketFormController {
         String description = descriptionField.getText();
         String status = statusField.getText(); // Since it's disabled, you might consider setting a default value
         String assignee = userNameField.getText(); // Assuming the assignee is the current user
+        String reportsTo = getManagerNameForCurrentUser();
 
         // Retrieve the current user's user_id from the database
         int userId = getUserIdByUserName(assignee);
@@ -106,8 +117,7 @@ public class CreateTicketFormController {
             newIssue.setCreatedAt(currentTimestamp);
             newIssue.setUserId(userId);
             newIssue.setUserName(assignee);
-
-            System.out.println(newIssue);
+            newIssue.setReportsTo(reportsTo);
             newIssue.addIssue();
             formStage.close();
         } else {
@@ -115,6 +125,30 @@ public class CreateTicketFormController {
         }
     }
 
+    private String getManagerNameForCurrentUser() {
+        String currentUser = SessionManager.getInstance().getLoggedInUsername();
+
+        try (Connection connection = DBConnector.getConnection(ConfigLoader.getDatabaseUrl(),
+                ConfigLoader.getDatabaseUser(), ConfigLoader.getDatabasePassword());
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     "SELECT u1.username AS managerName " +
+                             "FROM users u1 " +
+                             "JOIN users u2 ON u1.userId = u2.managerId " +
+                             "WHERE u2.username = ?")) {
+
+            preparedStatement.setString(1, currentUser);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getString("managerName");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
     private int getUserIdByUserName(String userName) {
         try (Connection connection = DBConnector.getConnection(ConfigLoader.getDatabaseUrl(),
                 ConfigLoader.getDatabaseUser(), ConfigLoader.getDatabasePassword());

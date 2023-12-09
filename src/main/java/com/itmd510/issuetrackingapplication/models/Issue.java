@@ -151,6 +151,40 @@ public class Issue {
         return issues;
     }
 
+    public static ObservableList<Issue> getIssuesForManager(String username) {
+        ObservableList<Issue> issues = FXCollections.observableArrayList();
+
+        String sql = "SELECT * FROM issues WHERE assignee = ? OR reportsTo = ?";
+
+        try (Connection connection = DBConnector.getConnection(ConfigLoader.getDatabaseUrl(),
+                ConfigLoader.getDatabaseUser(), ConfigLoader.getDatabasePassword());
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, username);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Issue issue = new Issue();
+                    issue.setIssueId(resultSet.getInt("issueId"));
+                    issue.setTitle(resultSet.getString("title"));
+                    issue.setDescription(resultSet.getString("description"));
+                    issue.setStatus(resultSet.getString("status"));
+                    issue.setCreatedAt(resultSet.getTimestamp("created_at"));
+                    issue.setAssignee(resultSet.getString("assignee"));
+                    issue.setReportsTo(resultSet.getString("reportsTo")); // You may need to change this line if reportsTo doesn't exist
+                    issues.add(issue);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return issues;
+    }
+
+
     private static String getUserNameByUserId(Connection connection, int userId) throws SQLException {
         String sql = "SELECT username FROM users WHERE userId = ?";
 

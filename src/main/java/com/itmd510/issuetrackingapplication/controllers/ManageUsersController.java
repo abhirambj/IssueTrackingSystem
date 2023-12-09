@@ -27,6 +27,9 @@ public class ManageUsersController {
     private TableColumn<User, String> emailColumn;
 
     @FXML
+    private TableColumn<User, Integer> managerIdColumn;
+
+    @FXML
     private TextField usernameField;
 
     @FXML
@@ -54,6 +57,7 @@ public class ManageUsersController {
         passwordColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("password"));
         roleColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("roleId"));
         emailColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("email"));
+        managerIdColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("managerId"));
 
         // Create an empty list for the TableView
         usersList = FXCollections.observableArrayList();
@@ -105,13 +109,20 @@ public class ManageUsersController {
                     roleDialog.showAndWait().ifPresent(role -> {
                         // Now 'role' contains the entered role
 
+                        TextInputDialog managerIdDialog = new TextInputDialog();
+                        managerIdDialog.setTitle("Add User");
+                        managerIdDialog.setHeaderText("Enter User Information");
+                        managerIdDialog.setContentText("Manager ID:");
+                        managerIdDialog.showAndWait().ifPresent(managerId -> {
+
                         // Create a new User object with the entered information
                         User newUser = new User();
 
                         // Add the new user to the database and refresh the TableView
-                        newUser.addUser(username, password, role, email);
+                        newUser.addUser(username, password, role, email, managerId);
                         showAlert("User added successfully");
                         refreshUserTableView();
+                        });
                     });
                 });
             });

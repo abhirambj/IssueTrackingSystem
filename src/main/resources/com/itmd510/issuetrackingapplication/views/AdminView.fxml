@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <AnchorPane prefHeight="903.0" prefWidth="1338.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.itmd510.issuetrackingapplication.controllers.AdminController">
 
@@ -30,7 +32,7 @@
                             <content>
                                 <ScrollPane fitToHeight="true" fitToWidth="true">
                                     <content>
-                                        <VBox fx:id="todoPaneContent" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                        <ListView fx:id="todoListView" prefHeight="645.0" prefWidth="383.0" />
                                     </content>
                                 </ScrollPane>
                             </content>
@@ -40,7 +42,7 @@
                             <content>
                                 <ScrollPane fitToHeight="true" fitToWidth="true">
                                     <content>
-                                        <VBox fx:id="inProgressPaneContent" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                        <ListView fx:id="inProgressListView" prefHeight="645.0" prefWidth="383.0" />
                                     </content>
                                 </ScrollPane>
                             </content>
@@ -50,15 +52,19 @@
                             <content>
                                 <ScrollPane fitToHeight="true" fitToWidth="true">
                                     <content>
-                                        <VBox fx:id="donePaneContent" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                        <ListView fx:id="doneListView" prefHeight="645.0" prefWidth="383.0" />
                                     </content>
                                 </ScrollPane>
                             </content>
                         </TitledPane>
+                  <Text fill="WHITE" layoutX="63.0" layoutY="61.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Admin Dashboard">
+                     <font>
+                        <Font name="System Bold" size="39.0" />
+                     </font>
+                  </Text>
                     </children>
                 </Pane>
             </center>
         </BorderPane>
     </children>
-
 </AnchorPane>

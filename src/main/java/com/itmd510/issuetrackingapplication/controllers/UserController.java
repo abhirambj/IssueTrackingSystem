@@ -5,7 +5,6 @@ import com.itmd510.issuetrackingapplication.config.SessionManager;
 import com.itmd510.issuetrackingapplication.models.Issue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -23,7 +22,6 @@ public class UserController extends BaseController {
 
     @FXML
     public AnchorPane draggableCard;
-    public VBox todoPaneContent;
     public VBox inProgressPaneContent;
     public VBox donePaneContent;
 
@@ -48,7 +46,16 @@ public class UserController extends BaseController {
     private SessionManager sessionManager;
     private List<Issue> userIssues;
 
-    private Stage createTicketFormStage;  // Add a field to store the reference to the form stage
+    private Stage createTicketFormStage;
+
+    @FXML
+    private ListView<VBox> todoListView;
+
+    @FXML
+    private ListView<VBox> inProgressListView;
+
+    @FXML
+    private ListView<VBox> doneListView;
 
     public void setSessionManager(SessionManager sessionManager) {
         this.sessionManager = sessionManager;
@@ -97,9 +104,9 @@ public class UserController extends BaseController {
 
     private void populateUI() {
         // Clear existing content
-        clearPaneContent(todoPane);
-        clearPaneContent(inProgressPane);
-        clearPaneContent(donePane);
+        todoListView.getItems().clear();
+        inProgressListView.getItems().clear();
+        doneListView.getItems().clear();
 
         for (Issue issue : userIssues) {
             // Load the custom issue card FXML
@@ -126,55 +133,20 @@ public class UserController extends BaseController {
             // Organize cards based on status
             switch (issue.getStatus()) {
                 case "To Do":
-                    addToPane(todoPane, card);
+                    todoListView.getItems().add(card);
                     break;
                 case "InProgress":
-                    addToPane(inProgressPane, card);
+                    inProgressListView.getItems().add(card);
                     break;
                 case "Done":
-                    addToPane(donePane, card);
+                    doneListView.getItems().add(card);
                     break;
-                default:
-                    System.out.println("Invalid status");
             }
-        }
-    }
-
-    private void clearPaneContent(TitledPane pane) {
-        if (pane != null) {
-            Node contentNode = pane.getContent();
-            if (contentNode instanceof VBox) {
-                ((VBox) contentNode).getChildren().clear();
-            } else {
-                VBox vbox = new VBox();  // Create a new VBox
-                pane.setContent(vbox);   // Set it as the content of the TitledPane
-            }
-        } else {
-            System.err.println("TitledPane is null. Cannot clear content.");
         }
     }
 
     @FXML
     private void handleCardPressed() {
-    }
-
-    private void addToPane(TitledPane pane, Node content) {
-        if (pane != null) {
-            Node existingContent = pane.getContent();
-            VBox vbox;
-
-            if (existingContent instanceof VBox) {
-                vbox = (VBox) existingContent;
-            } else {
-                vbox = new VBox();       // Create a new VBox
-                pane.setContent(vbox);   // Set it as the content of the TitledPane
-            }
-
-            // Add the new content (custom issue card) to the existing VBox
-            vbox.getChildren().add(content);
-        } else {
-            System.err.println("TitledPane is null. Cannot add content.");
-        }
     }
 
     @FXML

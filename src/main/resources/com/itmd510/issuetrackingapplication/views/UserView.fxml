@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<?import javafx.scene.control.ScrollPane?>
 <AnchorPane fx:id="draggableCard" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="903.0" prefWidth="1338.0" style="-fx-background-radius: 30px;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.itmd510.issuetrackingapplication.controllers.UserController">
     <children>
         <AnchorPane layoutX="50.0" layoutY="50.0" onMousePressed="#handleCardPressed" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #b0e57c;">
@@ -24,7 +24,7 @@
         </AnchorPane>
         <BorderPane layoutX="-3.0" layoutY="-5.0" prefHeight="909.0" prefWidth="1341.0" style="-fx-background-color: #191d45;">
             <top>
-                <HBox alignment="CENTER_RIGHT" spacing="10" prefHeight="72.0" prefWidth="1262.0" style="-fx-background-color: #6870d3;" BorderPane.alignment="CENTER">
+                <HBox alignment="CENTER_RIGHT" prefHeight="72.0" prefWidth="1262.0" spacing="10" style="-fx-background-color: #6870d3;" BorderPane.alignment="CENTER">
                     <children>
                         <Button fx:id="createButton" mnemonicParsing="false" onAction="#handleCreateTicket" prefHeight="40.0" prefWidth="70.0" style="-fx-background-color: #191d45; -fx-background-radius: 40px;" text="Create" textAlignment="CENTER" textFill="WHITE" />
                         <Button fx:id="refreshButton" mnemonicParsing="false" onAction="#handleRefresh" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: #191d45; -fx-background-radius: 40px;" text="Refresh" textAlignment="CENTER" textFill="WHITE" />
@@ -37,21 +37,38 @@
                     <children>
                         <TitledPane fx:id="todoPane" animated="false" layoutX="62.0" layoutY="100.0" prefHeight="645.0" prefWidth="383.0" text="TODO">
                             <content>
-                                <VBox fx:id="todoPaneContent" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                <ScrollPane fitToHeight="true" fitToWidth="true">
+                                    <content>
+                                        <ListView fx:id="todoListView" prefHeight="645.0" prefWidth="383.0" />
+                                    </content>
+                                </ScrollPane>
                             </content>
                         </TitledPane>
 
                         <TitledPane fx:id="inProgressPane" animated="false" layoutX="475.0" layoutY="99.0" prefHeight="645.0" prefWidth="383.0" text="IN PROGRESS">
                             <content>
-                                <VBox fx:id="inProgressPaneContent" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                <ScrollPane fitToHeight="true" fitToWidth="true">
+                                    <content>
+                                        <ListView fx:id="inProgressListView" prefHeight="645.0" prefWidth="383.0" />
+                                    </content>
+                                </ScrollPane>
                             </content>
                         </TitledPane>
 
                         <TitledPane fx:id="donePane" animated="false" layoutX="889.0" layoutY="99.0" prefHeight="645.0" prefWidth="383.0" text="DONE">
                             <content>
-                                <VBox fx:id="donePaneContent" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                <ScrollPane fitToHeight="true" fitToWidth="true">
+                                    <content>
+                                        <ListView fx:id="doneListView" prefHeight="645.0" prefWidth="383.0" />
+                                    </content>
+                                </ScrollPane>
                             </content>
                         </TitledPane>
+                  <Text fill="WHITE" layoutX="63.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User Dashboard">
+                     <font>
+                        <Font name="System Bold" size="44.0" />
+                     </font>
+                  </Text>
                     </children>
                 </Pane>
             </center>

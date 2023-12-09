@@ -7,10 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TitledPane;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -61,6 +58,15 @@ public class AdminController extends BaseController {
 
     @FXML
     private TitledPane donePane;
+
+    @FXML
+    private ListView<VBox> todoListView;
+
+    @FXML
+    private ListView<VBox> inProgressListView;
+
+    @FXML
+    private ListView<VBox> doneListView;
 
 
     public void setStage(Stage stage) {
@@ -165,9 +171,9 @@ public class AdminController extends BaseController {
 
     private void populateUI() {
         // Clear existing content
-        clearPaneContent(todoPane);
-        clearPaneContent(inProgressPane);
-        clearPaneContent(donePane);
+        todoListView.getItems().clear();
+        inProgressListView.getItems().clear();
+        doneListView.getItems().clear();
 
         for (Issue issue : adminIssues) {
             // Load the custom issue card FXML
@@ -191,17 +197,18 @@ public class AdminController extends BaseController {
             // Organize cards based on status
             switch (issue.getStatus()) {
                 case "To Do":
-                    addToPane(todoPane, card);
+                    todoListView.getItems().add(card);
                     break;
                 case "InProgress":
-                    addToPane(inProgressPane, card);
+                    inProgressListView.getItems().add(card);
                     break;
                 case "Done":
-                    addToPane(donePane, card);
+                    doneListView.getItems().add(card);
                     break;
             }
         }
     }
+
 
     @FXML
     private void handleLogout() {

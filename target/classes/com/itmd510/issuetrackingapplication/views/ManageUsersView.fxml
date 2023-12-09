@@ -49,6 +49,11 @@
                                 <PropertyValueFactory property="role"/>
                             </cellValueFactory>
                         </TableColumn>
+                        <TableColumn text="Manager ID" fx:id="managerIdColumn">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="managerId"/>
+                            </cellValueFactory>
+                        </TableColumn>
                     </columns>
                 </TableView>
             </children>

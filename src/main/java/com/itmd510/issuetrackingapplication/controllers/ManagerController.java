@@ -6,10 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TitledPane;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -19,6 +16,7 @@ import javafx.fxml.FXMLLoader;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 public class ManagerController extends BaseController {
 
@@ -37,6 +35,14 @@ public class ManagerController extends BaseController {
     private List<Issue> managerIssues;
 
     private SessionManager sessionManager;
+    @FXML
+    private ListView<VBox> todoListView;
+
+    @FXML
+    private ListView<VBox> inProgressListView;
+
+    @FXML
+    private ListView<VBox> doneListView;
 
     // Setter method for the stage
     public void setStage(Stage stage) {
@@ -79,7 +85,7 @@ public class ManagerController extends BaseController {
 
                 try {
                     // Load the login view
-                    Parent loginViewParent = FXMLLoader.load(getClass().getResource("/com/itmd510/issuetrackingapplication/views/LoginView.fxml"));
+                    Parent loginViewParent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/itmd510/issuetrackingapplication/views/LoginView.fxml")));
 
                     // Get the reference to the current window (Stage)
                     Stage primaryStage = (Stage) logoutButton.getScene().getWindow();
@@ -149,7 +155,7 @@ public class ManagerController extends BaseController {
 
     private void fetchManagerIssues() {
         // Fetch issues for the current user from the database
-        managerIssues = Issue.getIssuesForUser(sessionManager.getCurrentUser());
+        managerIssues = Issue.getIssuesForManager(sessionManager.getCurrentUser());
         System.out.println(managerIssues);
     }
 
@@ -160,9 +166,9 @@ public class ManagerController extends BaseController {
 
     private void populateUI() {
         // Clear existing content
-        clearPaneContent(todoPane);
-        clearPaneContent(inProgressPane);
-        clearPaneContent(donePane);
+        todoListView.getItems().clear();
+        inProgressListView.getItems().clear();
+        doneListView.getItems().clear();
 
         for (Issue issue : managerIssues) {
             // Load the custom issue card FXML
@@ -191,49 +197,15 @@ public class ManagerController extends BaseController {
             // Organize cards based on status
             switch (issue.getStatus()) {
                 case "To Do":
-                    addToPane(todoPane, card);
+                    todoListView.getItems().add(card);
                     break;
                 case "InProgress":
-                    addToPane(inProgressPane, card);
+                    inProgressListView.getItems().add(card);
                     break;
                 case "Done":
-                    addToPane(donePane, card);
+                    doneListView.getItems().add(card);
                     break;
             }
-        }
-    }
-
-    private void clearPaneContent(TitledPane pane) {
-        if (pane != null) {
-            Node contentNode = pane.getContent();
-            if (contentNode instanceof VBox) {
-                ((VBox) contentNode).getChildren().clear();
-            } else {
-                System.err.println("Content of TitledPane is not a VBox.");
-            }
-        } else {
-            System.err.println("TitledPane is null. Cannot clear content.");
-        }
-    }
-
-    private void addToPane(TitledPane pane, Node content) {
-        if (pane != null) {
-            Node existingContent = pane.getContent();
-            VBox vbox;
-
-            if (existingContent instanceof VBox) {
-                vbox = (VBox) existingContent;
-            } else {
-                // Create a new VBox and set it as the content of the TitledPane
-                vbox = new VBox();
-                pane.setContent(vbox);
-                System.out.println("Created a new VBox for TitledPane");
-            }
-
-            // Add the new content (custom issue card) to the existing VBox
-            vbox.getChildren().add(content);
-        } else {
-            System.err.println("TitledPane is null. Cannot add content.");
         }
     }
 

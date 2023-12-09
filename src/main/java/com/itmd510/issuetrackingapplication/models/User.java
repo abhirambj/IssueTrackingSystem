@@ -19,6 +19,8 @@ public class User {
     private String roleId;
     private String email;
 
+    private String managerId;
+
     public User() {
         // Default constructor
     }
@@ -30,12 +32,13 @@ public class User {
         this.email = email;
     }
 
-    public User(int userId, String username, String password, String roleId, String email) {
+    public User(int userId, String username, String password, String roleId, String email, String managerId) {
         this.userId = String.valueOf(userId);
         this.username = username;
         this.password = password;
         this.roleId = roleId;
         this.email = email;
+        this.managerId = managerId;
     }
 
     public static List<User> getAllUsers() {
@@ -52,8 +55,9 @@ public class User {
                 String password = resultSet.getString("password");
                 String roleId = resultSet.getString("roleId");
                 String email = resultSet.getString("email");
+                String managerId = resultSet.getString("managerId");
 
-                User user = new User(userId, username, password, roleId, email);
+                User user = new User(userId, username, password, roleId, email, managerId);
                 userList.add(user);
             }
         } catch (SQLException e) {
@@ -156,30 +160,45 @@ public class User {
         this.userId = userId;
     }
 
-    public boolean addUser(String username, String password, String roleId, String email) {
+    public boolean addUser(String username, String password, String roleId, String email, String managerId) {
         try (Connection connection = DBConnector.getConnection(
                 ConfigLoader.getDatabaseUrl(),
                 ConfigLoader.getDatabaseUser(),
                 ConfigLoader.getDatabasePassword());
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     "INSERT INTO users (username, password, roleId, email) VALUES (?, ?, (SELECT roleId FROM roles WHERE role_name = ?), ?)")) {
+                     "INSERT INTO users (username, password, roleId, email) VALUES (?, ?, (SELECT role_id FROM roles WHERE role_name = ? LIMIT 1), ?)")) {
+
             preparedStatement.setString(1, username);
 
             // Hash the password before setting it in the statement
             String hashedPassword = hashPassword(password);
             preparedStatement.setString(2, hashedPassword);
-
-            preparedStatement.setString(3, roleId);
+            preparedStatement.setString(3, roleId); // Set the roleId in the subquery
             preparedStatement.setString(4, email);
 
             int rowsAffected = preparedStatement.executeUpdate();
-            return rowsAffected > 0;
+
+            if (rowsAffected > 0) {
+                // User record inserted successfully, now update the managerId
+                try (PreparedStatement updateStatement = connection.prepareStatement(
+                        "UPDATE users SET managerId = ? WHERE username = ?")) {
+                    updateStatement.setString(1, managerId);
+                    updateStatement.setString(2, username);
+                    updateStatement.executeUpdate();
+                }
+                return true;
+            } else {
+                return false;
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
             // Handle the SQL exception appropriately, e.g., log or throw a custom exception
             return false;
         }
     }
+
+
 
     private String hashPassword(String password) {
         try {
@@ -203,4 +222,11 @@ public class User {
     }
 
 
+    public String getManagerId() {
+        return managerId;
+    }
+
+    public void setManagerId(String managerId) {
+        this.managerId = managerId;
+    }
 }

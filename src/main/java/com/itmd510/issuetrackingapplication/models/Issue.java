@@ -175,12 +175,13 @@ public class Issue {
 
             if (userId != -1) {
                 try (PreparedStatement preparedStatement = connection.prepareStatement(
-                        "INSERT INTO issues (title, description, status, assignee) VALUES (?, ?, ?, ?)")) {
+                        "INSERT INTO issues (title, description, status, assignee, created_at) VALUES (?, ?, ?, ?, ?)")) {
 
                     preparedStatement.setString(1, getTitle());
                     preparedStatement.setString(2, getDescription());
                     preparedStatement.setString(3, getStatus());
                     preparedStatement.setString(4, getAssignee());
+                    preparedStatement.setTimestamp(5, new Timestamp(System.currentTimeMillis())); // Set current timestamp
                     preparedStatement.executeUpdate();
 
                 } catch (SQLException e) {

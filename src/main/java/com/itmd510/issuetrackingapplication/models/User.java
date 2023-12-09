@@ -122,20 +122,21 @@ public class User {
         }
     }
 
-
     public void updateUser() {
+        System.out.println("Updating user values: " + username + ", " + password + ", " + roleId + ", " + email + ", " + managerId + ", " + userId);
         try (Connection connection = DBConnector.getConnection(
                 ConfigLoader.getDatabaseUrl(),
                 ConfigLoader.getDatabaseUser(),
                 ConfigLoader.getDatabasePassword());
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     "UPDATE users SET username = ?, password = ?, roleId = (SELECT roleId FROM roles WHERE role_name = ?), email = ? WHERE userId = ?")) {
+                     "UPDATE users SET username = ?, password = ?, roleId = (SELECT role_id FROM roles WHERE role_name = ?), email = ?, managerId = ? WHERE userId = ?")) {
+
             preparedStatement.setString(1, username);
-            String hashedPassword = hashPassword(password);
-            preparedStatement.setString(2, hashedPassword);
-            preparedStatement.setString(3, roleId);
+            preparedStatement.setString(2, password);  // Assuming 'password' is the plain text password
+            preparedStatement.setString(3, roleId);  // Make sure roleId is the correct variable name
             preparedStatement.setString(4, email);
-            preparedStatement.setInt(5, Integer.parseInt(userId));
+            preparedStatement.setString(5, managerId);
+            preparedStatement.setInt(6, Integer.parseInt(userId));
 
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {

@@ -6,6 +6,9 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class ManageUsersController {
 
     @FXML
@@ -129,6 +132,109 @@ public class ManageUsersController {
         });
     }
 
+
+    @FXML
+    private Button updateUserButton;
+
+    @FXML
+    private void handleUpdateUser() {
+        // Get the selected user from the TableView
+        User selectedUser = usersTableView.getSelectionModel().getSelectedItem();
+
+        if (selectedUser != null) {
+            // Create a TextInputDialog for user input
+            TextInputDialog dialog = new TextInputDialog(selectedUser.getUsername());
+            dialog.setTitle("Update User");
+            dialog.setHeaderText("Enter Updated User Information");
+            dialog.setContentText("Username:");
+
+            // Show the dialog and wait for the user's response
+            dialog.showAndWait().ifPresent(username -> {
+                // Now 'username' contains the entered username
+
+                // Prompt for email
+                TextInputDialog emailDialog = new TextInputDialog(selectedUser.getEmail());
+                emailDialog.setTitle("Update User");
+                emailDialog.setHeaderText("Enter Updated User Information");
+                emailDialog.setContentText("Email:");
+
+                // Show the email dialog and wait for the user's response
+                emailDialog.showAndWait().ifPresent(email -> {
+                    // Now 'email' contains the entered email
+
+                    // Prompt for role
+                    TextInputDialog roleDialog = new TextInputDialog(selectedUser.getRoleId());
+                    roleDialog.setTitle("Update User");
+                    roleDialog.setHeaderText("Enter Updated User Information");
+                    roleDialog.setContentText("Role:");
+
+                    // Show the role dialog and wait for the user's response
+                    roleDialog.showAndWait().ifPresent(role -> {
+                        // Now 'role' contains the entered role
+
+                        TextInputDialog managerIdDialog = new TextInputDialog(selectedUser.getManagerId());
+                        managerIdDialog.setTitle("Update User");
+                        managerIdDialog.setHeaderText("Enter Updated User Information");
+                        managerIdDialog.setContentText("Manager ID:");
+
+                        // Show the managerId dialog and wait for the user's response
+                        managerIdDialog.showAndWait().ifPresent(managerId -> {
+                            // Now 'managerId' contains the entered managerId
+
+                            // Prompt for password update
+                            PasswordDialog passwordDialog = new PasswordDialog();
+                            passwordDialog.setTitle("Update User");
+                            passwordDialog.setHeaderText("Enter New Password (Leave blank to keep the current password)");
+                            passwordDialog.setContentText("Password:");
+
+                            // Show the password dialog and wait for the user's response
+                            passwordDialog.showAndWait().ifPresent(newPassword -> {
+                                // Now 'newPassword' contains the entered new password
+
+                                // Update the selected user in the database and refresh the TableView
+                                selectedUser.setUsername(username);
+                                selectedUser.setRoleId(role);
+                                selectedUser.setEmail(email);
+                                selectedUser.setManagerId(managerId);
+
+                                // Update password only if a new password is entered
+                                if (!newPassword.isEmpty()) {
+                                    selectedUser.setPassword(hashPassword(newPassword));
+                                }
+
+                                selectedUser.updateUser();
+                                showAlert("User updated successfully");
+                                refreshUserTableView();
+                            });
+                        });
+                    });
+                });
+            });
+        } else {
+            showAlert("Please select a user to update");
+        }
+    }
+
+    private String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(password.getBytes());
+            byte[] byteData = md.digest();
+
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : byteData) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) {
+                    hexString.append('0');
+                }
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     @FXML
     private void handleDeleteUser() {

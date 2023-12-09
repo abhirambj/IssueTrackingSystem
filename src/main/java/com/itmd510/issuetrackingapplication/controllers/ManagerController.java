@@ -31,7 +31,7 @@ public class ManagerController extends BaseController {
     public TitledPane donePane;
     public VBox donePaneContent;
     public Button refreshButton;
-    private Stage stage; // Reference to the stage
+    private Stage stage;
     private LoginController loginController;
 
     private List<Issue> managerIssues;

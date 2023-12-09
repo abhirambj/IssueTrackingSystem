@@ -211,7 +211,7 @@ public class IssueCardController {
     public void setStatus(String status) {
         // Set text color based on status
         switch (status.toLowerCase()) {
-            case "todo", "inprogress", "done":
+            case "to do", "inprogress", "done":
                 setStatusTextColor("white");
                 break;
             default:

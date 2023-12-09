@@ -19,14 +19,13 @@
                 <Label text="Description" style="-fx-text-fill: white;" />
                 <TextField fx:id="descriptionField" style="-fx-background-color: #fff;" />
                 <Label text="Status" style="-fx-text-fill: white;" />
-                <TextField fx:id="statusField" style="-fx-background-color: #fff;" editable="false" />
+                <TextField fx:id="statusField" style="-fx-background-color: #fff;"/>
             </children>
         </VBox>
 
         <!-- HBox for the Alter button -->
         <HBox layoutX="20.0" layoutY="280.0" prefHeight="30.0" prefWidth="360.0" spacing="10.0" style="-fx-padding: 10;">
             <children>
-                <!-- Set Hgrow to ALWAYS to push the button to the right -->
                 <Button fx:id="alterButton" text="Alter" onAction="#handleAlterButton" style="-fx-background-color: #6870d3; -fx-text-fill: white; -fx-padding: 8 15 8 15;" HBox.hgrow="ALWAYS" />
             </children>
         </HBox>

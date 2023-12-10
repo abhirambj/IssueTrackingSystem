@@ -156,6 +156,7 @@ public class ManagerController extends BaseController {
     private void fetchManagerIssues() {
         // Fetch issues for the current user from the database
         managerIssues = Issue.getIssuesForManager(sessionManager.getCurrentUser());
+        System.out.println(managerIssues);
     }
 
     @FXML

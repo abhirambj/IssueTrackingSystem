@@ -18,7 +18,7 @@ public class Loader {
                 "CREATE INDEX managerId ON its_users (managerId)",
                 "CREATE TABLE IF NOT EXISTS its_projects (projectId INT AUTO_INCREMENT PRIMARY KEY, projectName VARCHAR(255) NOT NULL, clientName VARCHAR(255) NOT NULL, projectLead INT NULL, CONSTRAINT projects_ibfk_1 FOREIGN KEY (projectLead) REFERENCES its_users (userId))",
                 "CREATE INDEX projectLead ON its_projects (projectLead)",
-                "CREATE TABLE IF NOT EXISTS its_issues (issueId INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(255) NOT NULL, description TEXT NULL, assignee INT NULL, reportsTo INT NULL, status VARCHAR(255) DEFAULT 'ToDo' NULL, created_at TIMESTAMP NULL, CONSTRAINT issues_ibfk_1 FOREIGN KEY (assignee) REFERENCES its_users (userId), CONSTRAINT issues_ibfk_2 FOREIGN KEY (reportsTo) REFERENCES its_users (userId))",
+                "CREATE TABLE IF NOT EXISTS its_issues (issueId INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(255) NOT NULL, description TEXT NULL, assignee VARCHAR(255) NULL, reportsTo VARCHAR(255) NULL, status VARCHAR(255) DEFAULT 'To Do' NULL, created_at TIMESTAMP NULL, CONSTRAINT issues_ibfk_1 FOREIGN KEY (assignee) REFERENCES its_users (username), CONSTRAINT issues_ibfk_2 FOREIGN KEY (reportsTo) REFERENCES its_users (username))",
                 "CREATE INDEX assignee ON its_issues (assignee)",
                 "CREATE INDEX reportsTo ON its_issues (reportsTo)"
         };
@@ -42,6 +42,60 @@ public class Loader {
         }
     }
 
+    public void dropTables() {
+        String[] dropTableQueries = {
+                "DROP TABLE IF EXISTS its_issues",
+                "DROP TABLE IF EXISTS its_projects",
+                "DROP TABLE IF EXISTS its_users",
+                "DROP TABLE IF EXISTS its_roles"
+        };
+
+        try (Connection connection = DBConnector.getConnection(
+                ConfigLoader.getDatabaseUrl(),
+                ConfigLoader.getDatabaseUser(),
+                ConfigLoader.getDatabasePassword())) {
+
+            if (connection != null) {
+                Statement statement = connection.createStatement();
+
+                for (String query : dropTableQueries) {
+                    statement.executeUpdate(query);
+                }
+                System.out.println("Tables dropped successfully.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace(); // Consider logging the error message or handling it more gracefully
+        }
+    }
+
+    public  void updateTables() {
+        String[] updateTableQueries = {
+                "ALTER TABLE its_issues MODIFY COLUMN assignee VARCHAR(255)",
+                "ALTER TABLE its_issues MODIFY COLUMN reportsTo VARCHAR(255)",
+                "ALTER TABLE its_issues ADD CONSTRAINT issues_ibfk_1 FOREIGN KEY (assignee) REFERENCES its_users (username)",
+                "ALTER TABLE its_issues ADD CONSTRAINT issues_ibfk_2 FOREIGN KEY (reportsTo) REFERENCES its_users (username)",
+                "ALTER TABLE its_issues MODIFY COLUMN status VARCHAR(255) DEFAULT 'To Do'",
+        };
+
+        try (Connection connection = DBConnector.getConnection(
+                ConfigLoader.getDatabaseUrl(),
+                ConfigLoader.getDatabaseUser(),
+                ConfigLoader.getDatabasePassword())) {
+
+            if (connection != null) {
+                Statement statement = connection.createStatement();
+
+                for (String query : updateTableQueries) {
+                    statement.executeUpdate(query);
+                }
+                System.out.println("Tables updated successfully.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace(); // Consider logging the error message or handling it more gracefully
+        }
+    }
     public void retrieveTableNames() {
         try (Connection connection = DBConnector.getConnection(
                 ConfigLoader.getDatabaseUrl(),
@@ -69,7 +123,8 @@ public class Loader {
 
     public static void main(String[] args) {
         Loader loader = new Loader();
-        loader.createTables();
+        loader.updateTables();
+//        loader.createTables();
         loader.retrieveTableNames();
     }
 }

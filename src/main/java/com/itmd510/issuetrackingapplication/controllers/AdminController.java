@@ -101,38 +101,6 @@ public class AdminController extends BaseController {
         }
     }
 
-    private void clearPaneContent(TitledPane pane) {
-        if (pane != null) {
-            Node contentNode = pane.getContent();
-            if (contentNode instanceof VBox) {
-                ((VBox) contentNode).getChildren().clear();
-            } else {
-                System.err.println("Content of TitledPane is not a VBox.");
-            }
-        } else {
-            System.err.println("TitledPane is null. Cannot clear content.");
-        }
-    }
-
-    private void addToPane(TitledPane pane, Node content) {
-        if (pane != null) {
-            Node existingContent = pane.getContent();
-            VBox vbox;
-
-            if (existingContent instanceof VBox) {
-                vbox = (VBox) existingContent;
-            } else {
-                vbox = new VBox();
-                pane.setContent(vbox);
-            }
-
-            // Add the new content (custom issue card) to the existing VBox
-            vbox.getChildren().add(content);
-        } else {
-            System.err.println("TitledPane is null. Cannot add content.");
-        }
-    }
-
     @FXML
     private void handleManageProjects() {
         try {

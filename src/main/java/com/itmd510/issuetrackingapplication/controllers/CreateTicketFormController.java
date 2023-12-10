@@ -103,6 +103,7 @@ public class CreateTicketFormController {
 
         // Retrieve the current user's user_id from the database
         int userId = getUserIdByUserName(assignee);
+        System.out.println(userId);
 
         if (userId != -1) {
             // Create a new Timestamp for the current time
@@ -119,10 +120,16 @@ public class CreateTicketFormController {
             newIssue.setUserName(assignee);
             newIssue.setReportsTo(reportsTo);
             newIssue.addIssue();
+            clearFields();
             formStage.close();
         } else {
             System.out.println("User not found. Please specify a valid user.");
         }
+    }
+
+    private void clearFields() {
+        titleField.clear();
+        descriptionField.clear();
     }
 
     private String getManagerNameForCurrentUser() {

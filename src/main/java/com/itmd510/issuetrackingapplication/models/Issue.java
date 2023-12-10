@@ -109,7 +109,7 @@ public class Issue {
                 issue.setStatus(resultSet.getString("status"));
                 issue.setCreatedAt(resultSet.getTimestamp("created_at"));
                 issue.setAssignee(resultSet.getString("assignee"));
-                issue.setReportsTo(getUserNameByUserId(connection, resultSet.getInt("reportsTo")));
+                issue.setReportsTo("reportsTo");
                 issues.add(issue);
             }
 
@@ -172,7 +172,8 @@ public class Issue {
                     issue.setStatus(resultSet.getString("status"));
                     issue.setCreatedAt(resultSet.getTimestamp("created_at"));
                     issue.setAssignee(resultSet.getString("assignee"));
-                    issue.setReportsTo(resultSet.getString("reportsTo")); // You may need to change this line if reportsTo doesn't exist
+                    issue.setReportsTo(resultSet.getString("reportsTo"));
+                    System.out.println(issue);
                     issues.add(issue);
                 }
             }
@@ -209,13 +210,14 @@ public class Issue {
 
             if (userId != -1) {
                 try (PreparedStatement preparedStatement = connection.prepareStatement(
-                        "INSERT INTO its_issues (title, description, status, assignee, created_at) VALUES (?, ?, ?, ?, ?)")) {
+                        "INSERT INTO its_issues (title, description, status, assignee, reportsTo, created_at) VALUES (?, ?, ?, ?, ?, ?)")) {
 
                     preparedStatement.setString(1, getTitle());
                     preparedStatement.setString(2, getDescription());
                     preparedStatement.setString(3, getStatus());
                     preparedStatement.setString(4, getAssignee());
-                    preparedStatement.setTimestamp(5, new Timestamp(System.currentTimeMillis())); // Set current timestamp
+                    preparedStatement.setString(5, getReportsTo());
+                    preparedStatement.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
                     preparedStatement.executeUpdate();
 
                 } catch (SQLException e) {

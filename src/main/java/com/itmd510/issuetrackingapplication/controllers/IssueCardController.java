@@ -40,21 +40,17 @@ public class IssueCardController {
     @FXML
     private Text statusText;
 
-    // Assuming you have a delete button in your FXML
     @FXML
     private Button deleteButton;
 
-    private UserController userController; // Add this field
-
-    // Setter method for UserController reference
+    private UserController userController;
     public void setUserController(UserController userController) {
         this.userController = userController;
     }
 
 
-    private ObservableList<Issue> issues; // Assuming you have a list of issues
+    private ObservableList<Issue> issues;
 
-    // Setter for the issues list
     public void setIssues(ObservableList<Issue> issues) {
         this.issues = issues;
     }
@@ -74,7 +70,7 @@ public class IssueCardController {
         );
 
         Blend blend = new Blend();
-        blend.setMode(BlendMode.SRC_ATOP); // Use BlendMode from javafx.scene.effect.BlendMode
+        blend.setMode(BlendMode.SRC_ATOP);
         blend.setTopInput(colorInput);
 
         icon.setEffect(blend);
@@ -82,7 +78,6 @@ public class IssueCardController {
 
 
     private void handleDelete() {
-        // Retrieve the data from the issue card
         int issueId = getIssueId();
         String title = titleText.getText();
 
@@ -94,77 +89,58 @@ public class IssueCardController {
 
         confirmationDialog.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                // Create an instance of the Issue class
                 Issue issueToDelete = new Issue();
-                // Set the necessary data for the issue
                 issueToDelete.setIssueId(issueId);
-                // Call the deleteIssue method to delete the issue
                 issueToDelete.deleteIssue();
 
-                // Refresh the UI by updating the issues list
                 if (issues != null) {
-                    // Remove the issue from the list
                     issues.removeIf(issue -> issue.getIssueId() == issueId);
 
-                    // Optionally, update your UI elements here based on the modified issues list
                 }
 
-                // Refresh the UI in UserController
                 refreshUI();
             }
         });
     }
 
-    // Assuming you have a reference to the UserController in IssueCardController
     private void refreshUI() {
-        // Check if the UserController reference is available
         if (userController != null) {
-            // Call the refreshUI method in UserController
             userController.refreshUI();
         }
     }
 
     @FXML
     private void handleCardClicked(MouseEvent event) {
-        // Check if the delete icon is clicked
         if (event.getTarget() == deleteIcon) {
-            // Issue is being deleted, do not open the details form
             return;
         }
 
-        // Retrieve the data from the clicked issue card
         int issueId = Integer.parseInt(issueIdText.getText());
         String title = titleText.getText();
         String description = descriptionText.getText();
         String status = statusText.getText();
 
-        // Open the details form with the retrieved data
         openDetailsForm(issueId, title, description, status);
     }
 
 
     private void openDetailsForm(int issueId, String title, String description, String status) {
         try {
-            // Load the details form from the FXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/itmd510/issuetrackingapplication/views/DetailsForm.fxml"));
             Parent form = loader.load();
 
-            // Access the controller of the details form
             DetailsFormController detailsController = loader.getController();
 
-            // Set the data in the details form
             detailsController.setIssueId(String.valueOf(issueId));
             detailsController.setTitle(title);
             detailsController.setDescription(description);
             detailsController.setStatus(status);
 
-            // Create a new stage (window) for the details form
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("Issue Details");
             stage.setScene(new Scene(form));
 
-            // Show the details form
             stage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
@@ -175,7 +151,6 @@ public class IssueCardController {
         issueIdText.setText(String.valueOf(id));
     }
 
-    // Getter method for issueId as int
     public int getIssueId() {
         return Integer.parseInt(issueIdText.getText());
     }
@@ -189,18 +164,15 @@ public class IssueCardController {
     }
 
     public void setStatus(String status) {
-        // Set text color based on status
         switch (status.toLowerCase()) {
             case "to do", "inprogress", "done":
                 setStatusTextColor("white");
                 break;
             default:
-                // Default text color (black) for unknown status
                 setStatusTextColor("black");
                 break;
         }
 
-        // Set status text
         statusText.setText(status);
     }
 

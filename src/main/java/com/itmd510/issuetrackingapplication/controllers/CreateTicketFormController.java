@@ -38,11 +38,11 @@ public class CreateTicketFormController {
     private TextField userNameField;
 
     @FXML
-    private Button submitButton; // Added reference to the submit button
+    private Button submitButton;
 
     private BaseController parentController;
 
-    private Stage formStage; // Reference to the form stage
+    private Stage formStage;
 
 
     public void setParentController(BaseController parentController) {
@@ -51,9 +51,7 @@ public class CreateTicketFormController {
 
     @FXML
     private void handleCreateTicket() {
-        // Existing code
 
-        // Notify the parent controller to refresh UI
         if (parentController != null) {
             if (parentController instanceof UserController) {
                 ((UserController) parentController).refreshUI();
@@ -62,7 +60,6 @@ public class CreateTicketFormController {
             }
         }
 
-        // Close the form
         Stage stage = (Stage) formStage.getScene().getWindow();
         stage.close();
     }
@@ -72,13 +69,11 @@ public class CreateTicketFormController {
     }
 
     public void initialize() {
-        // Set default values and disable the fields
         statusField.setText("To Do");
         statusField.setDisable(true);
         userNameField.setText(SessionManager.getInstance().getLoggedInUsername());
         userNameField.setDisable(true);
 
-        // Bind the disable property of the submit button to a BooleanBinding
         BooleanBinding disableSubmitButton = Bindings.createBooleanBinding(
                 () -> titleField.getText().isEmpty() || descriptionField.getText().isEmpty(),
                 titleField.textProperty(),
@@ -94,22 +89,18 @@ public class CreateTicketFormController {
 
     @FXML
     private void handleSubmit() {
-        // Retrieve values from the form fields
         String title = titleField.getText();
         String description = descriptionField.getText();
-        String status = statusField.getText(); // Since it's disabled, you might consider setting a default value
-        String assignee = userNameField.getText(); // Assuming the assignee is the current user
+        String status = statusField.getText();
+        String assignee = userNameField.getText();
         String reportsTo = getManagerNameForCurrentUser();
 
-        // Retrieve the current user's user_id from the database
         int userId = getUserIdByUserName(assignee);
         System.out.println(userId);
 
         if (userId != -1) {
-            // Create a new Timestamp for the current time
             Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
 
-            // Create a new Issue instance
             Issue newIssue = new Issue();
             newIssue.setTitle(title);
             newIssue.setDescription(description);
@@ -173,7 +164,7 @@ public class CreateTicketFormController {
             e.printStackTrace();
         }
 
-        return -1; // Return -1 or handle it appropriately if the user_id is not found
+        return -1;
     }
 
 }

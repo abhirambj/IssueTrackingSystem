@@ -8,7 +8,6 @@ public class SessionManager {
     private String currentUser;
 
     private SessionManager() {
-        // Private constructor to enforce singleton pattern
     }
 
     public static SessionManager getInstance() {
@@ -39,7 +38,6 @@ public class SessionManager {
         return currentUser != null;
     }
 
-    // Add this method to get the logged-in username
     public String getLoggedInUsername() {
         return currentUser;
     }

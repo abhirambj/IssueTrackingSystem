@@ -132,8 +132,8 @@ public class CreateTicketFormController {
                 ConfigLoader.getDatabaseUser(), ConfigLoader.getDatabasePassword());
              PreparedStatement preparedStatement = connection.prepareStatement(
                      "SELECT u1.username AS managerName " +
-                             "FROM users u1 " +
-                             "JOIN users u2 ON u1.userId = u2.managerId " +
+                             "FROM its_users u1 " +
+                             "JOIN its_users u2 ON u1.userId = u2.managerId " +
                              "WHERE u2.username = ?")) {
 
             preparedStatement.setString(1, currentUser);
@@ -153,7 +153,7 @@ public class CreateTicketFormController {
         try (Connection connection = DBConnector.getConnection(ConfigLoader.getDatabaseUrl(),
                 ConfigLoader.getDatabaseUser(), ConfigLoader.getDatabasePassword());
              PreparedStatement preparedStatement = connection
-                     .prepareStatement("SELECT userId FROM users WHERE username = ?")) {
+                     .prepareStatement("SELECT userId FROM its_users WHERE username = ?")) {
 
             preparedStatement.setString(1, userName);
 

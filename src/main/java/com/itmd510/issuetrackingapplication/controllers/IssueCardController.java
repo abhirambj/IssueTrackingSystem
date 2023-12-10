@@ -124,26 +124,6 @@ public class IssueCardController {
         }
     }
 
-
-
-    public void setUserRole(String userRole) {
-        this.userRole = userRole;
-        updateDeleteButtonVisibility(); // Update delete button visibility when user role is set
-    }
-
-    private void updateDeleteButtonVisibility() {
-        // Assuming you have a deleteButton in your FXML file
-        if (deleteButton != null) {
-            if ("user".equalsIgnoreCase(userRole)) {
-                // If the user role is "user," disable the delete button
-                deleteButton.setDisable(true);
-            } else {
-                // If the user role is not "user," enable the delete button
-                deleteButton.setDisable(false);
-            }
-        }
-    }
-
     @FXML
     private void handleCardClicked(MouseEvent event) {
         // Check if the delete icon is clicked

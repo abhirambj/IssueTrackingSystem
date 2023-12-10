@@ -46,7 +46,7 @@ public class User {
 
         try (Connection connection = DBConnector.getConnection(ConfigLoader.getDatabaseUrl(),
                 ConfigLoader.getDatabaseUser(), ConfigLoader.getDatabasePassword());
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM users");
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM its_users");
              ResultSet resultSet = preparedStatement.executeQuery()) {
 
             while (resultSet.next()) {
@@ -105,7 +105,7 @@ public class User {
                 ConfigLoader.getDatabaseUser(),
                 ConfigLoader.getDatabasePassword());
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     "DELETE FROM users WHERE userId = ?")) {
+                     "DELETE FROM its_users WHERE userId = ?")) {
             preparedStatement.setInt(1, Integer.parseInt(userId));
 
             int rowsAffected = preparedStatement.executeUpdate();
@@ -129,7 +129,7 @@ public class User {
                 ConfigLoader.getDatabaseUser(),
                 ConfigLoader.getDatabasePassword());
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     "UPDATE users SET username = ?, password = ?, roleId = (SELECT role_id FROM roles WHERE role_name = ?), email = ?, managerId = ? WHERE userId = ?")) {
+                     "UPDATE its_users SET username = ?, password = ?, roleId = (SELECT role_id FROM its_roles WHERE role_name = ?), email = ?, managerId = ? WHERE userId = ?")) {
 
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, password);  // Assuming 'password' is the plain text password
@@ -167,7 +167,7 @@ public class User {
                 ConfigLoader.getDatabaseUser(),
                 ConfigLoader.getDatabasePassword());
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     "INSERT INTO users (username, password, roleId, email) VALUES (?, ?, (SELECT role_id FROM roles WHERE role_name = ? LIMIT 1), ?)")) {
+                     "INSERT INTO its_users (username, password, roleId, email) VALUES (?, ?, (SELECT role_id FROM its_roles WHERE role_name = ? LIMIT 1), ?)")) {
 
             preparedStatement.setString(1, username);
 
@@ -182,7 +182,7 @@ public class User {
             if (rowsAffected > 0) {
                 // User record inserted successfully, now update the managerId
                 try (PreparedStatement updateStatement = connection.prepareStatement(
-                        "UPDATE users SET managerId = ? WHERE username = ?")) {
+                        "UPDATE its_users SET managerId = ? WHERE username = ?")) {
                     updateStatement.setString(1, managerId);
                     updateStatement.setString(2, username);
                     updateStatement.executeUpdate();

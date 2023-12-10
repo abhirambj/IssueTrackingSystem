@@ -116,7 +116,7 @@ public class LoginController extends BaseController {
                 ConfigLoader.getDatabaseUser(),
                 ConfigLoader.getDatabasePassword());
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     "SELECT roleId FROM users WHERE username = ? AND password = ?")) {
+                     "SELECT roleId FROM its_users WHERE username = ? AND password = ?")) {
 
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, hashedPassword);
@@ -145,7 +145,7 @@ public class LoginController extends BaseController {
                 ConfigLoader.getDatabaseUser(),
                 ConfigLoader.getDatabasePassword());
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     "SELECT role_name FROM roles WHERE role_id = ?")) {
+                     "SELECT role_name FROM its_roles WHERE role_id = ?")) {
 
             preparedStatement.setString(1, roleId);
 

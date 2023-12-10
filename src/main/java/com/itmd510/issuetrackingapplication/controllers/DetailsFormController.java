@@ -87,8 +87,6 @@ public class DetailsFormController {
 
         // Fire the event
         alterButton.fireEvent(new IssueUpdateEvent());
-        System.out.println("Issue updated!");
-        System.out.println("Firing IssueUpdateEvent");
 
         // Get the reference to the current window (Stage)
         Stage primaryStage = (Stage) alterButton.getScene().getWindow();

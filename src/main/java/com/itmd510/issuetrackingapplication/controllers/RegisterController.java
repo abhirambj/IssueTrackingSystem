@@ -60,7 +60,7 @@ public class RegisterController extends BaseController {
                 ConfigLoader.getDatabaseUser(),
                 ConfigLoader.getDatabasePassword());
                 PreparedStatement preparedStatement = connection.prepareStatement(
-                        "INSERT INTO users (username, password, roleId, email) VALUES (?, ?, (SELECT role_id FROM roles WHERE role_name = 'User'), ?)")) {
+                        "INSERT INTO its_users (username, password, roleId, email) VALUES (?, ?, (SELECT role_id FROM its_roles WHERE role_name = 'user'), ?)")) {
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, hashedPassword);
             preparedStatement.setString(3, email);

@@ -70,7 +70,7 @@ public class Project {
                 ConfigLoader.getDatabaseUser(), ConfigLoader.getDatabasePassword())) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(
-                    "INSERT INTO projects (projectName, clientName, projectLead) VALUES (?, ?, ?)")) {
+                    "INSERT INTO its_projects (projectName, clientName, projectLead) VALUES (?, ?, ?)")) {
 
                 preparedStatement.setString(1, getProjectName());
                 preparedStatement.setString(2, getClientName());
@@ -93,7 +93,7 @@ public class Project {
         try (Connection connection = DBConnector.getConnection(ConfigLoader.getDatabaseUrl(),
                 ConfigLoader.getDatabaseUser(), ConfigLoader.getDatabasePassword())) {
 
-            String query = "SELECT * FROM projects";
+            String query = "SELECT * FROM its_projects";
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -131,7 +131,7 @@ public class Project {
                 ConfigLoader.getDatabaseUser(), ConfigLoader.getDatabasePassword())) {
 
             // Update project details in the database
-            String updateQuery = "UPDATE projects SET projectName=?, clientName=?, projectLead=? WHERE projectId=?";
+            String updateQuery = "UPDATE its_projects SET projectName=?, clientName=?, projectLead=? WHERE projectId=?";
             try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
                 preparedStatement.setString(1, this.projectName);
                 preparedStatement.setString(2, this.clientName);
@@ -154,7 +154,7 @@ public class Project {
     }
 
     public void deleteProject() {
-        String query = "DELETE FROM projects WHERE projectId = ?";
+        String query = "DELETE FROM its_projects WHERE projectId = ?";
         try (Connection connection = DBConnector.getConnection(ConfigLoader.getDatabaseUrl(),
                 ConfigLoader.getDatabaseUser(), ConfigLoader.getDatabasePassword());
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {

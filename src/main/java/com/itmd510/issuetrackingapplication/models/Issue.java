@@ -98,7 +98,7 @@ public class Issue {
 
         try (Connection connection = DBConnector.getConnection(ConfigLoader.getDatabaseUrl(),
                 ConfigLoader.getDatabaseUser(), ConfigLoader.getDatabasePassword());
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM issues");
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM its_issues");
              ResultSet resultSet = preparedStatement.executeQuery()) {
 
             while (resultSet.next()) {
@@ -122,7 +122,7 @@ public class Issue {
     public static ObservableList<Issue> getIssuesForUser(String username) {
         ObservableList<Issue> issues = FXCollections.observableArrayList();
 
-        String sql = "SELECT * FROM issues WHERE assignee = (SELECT username FROM users WHERE username = ?)";
+        String sql = "SELECT * FROM its_issues WHERE assignee = (SELECT username FROM its_users WHERE username = ?)";
 
         try (Connection connection = DBConnector.getConnection(ConfigLoader.getDatabaseUrl(),
                 ConfigLoader.getDatabaseUser(), ConfigLoader.getDatabasePassword());
@@ -154,7 +154,7 @@ public class Issue {
     public static ObservableList<Issue> getIssuesForManager(String username) {
         ObservableList<Issue> issues = FXCollections.observableArrayList();
 
-        String sql = "SELECT * FROM issues WHERE assignee = ? OR reportsTo = ?";
+        String sql = "SELECT * FROM its_issues WHERE assignee = ? OR reportsTo = ?";
 
         try (Connection connection = DBConnector.getConnection(ConfigLoader.getDatabaseUrl(),
                 ConfigLoader.getDatabaseUser(), ConfigLoader.getDatabasePassword());
@@ -186,7 +186,7 @@ public class Issue {
 
 
     private static String getUserNameByUserId(Connection connection, int userId) throws SQLException {
-        String sql = "SELECT username FROM users WHERE userId = ?";
+        String sql = "SELECT username FROM its_users WHERE userId = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, userId);
@@ -209,7 +209,7 @@ public class Issue {
 
             if (userId != -1) {
                 try (PreparedStatement preparedStatement = connection.prepareStatement(
-                        "INSERT INTO issues (title, description, status, assignee, created_at) VALUES (?, ?, ?, ?, ?)")) {
+                        "INSERT INTO its_issues (title, description, status, assignee, created_at) VALUES (?, ?, ?, ?, ?)")) {
 
                     preparedStatement.setString(1, getTitle());
                     preparedStatement.setString(2, getDescription());
@@ -232,7 +232,7 @@ public class Issue {
 
     private int getUserIdByUserName(Connection connection, String userName) {
         try (PreparedStatement preparedStatement = connection
-                .prepareStatement("SELECT userId FROM users WHERE username = ?")) {
+                .prepareStatement("SELECT userId FROM its_users WHERE username = ?")) {
             preparedStatement.setString(1, userName);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -250,7 +250,7 @@ public class Issue {
         try (Connection connection = DBConnector.getConnection(ConfigLoader.getDatabaseUrl(),
                 ConfigLoader.getDatabaseUser(), ConfigLoader.getDatabasePassword());
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     "UPDATE issues SET title=?, description=?, status=?, assignee=?, reportsTo=? WHERE issueId=?")) {
+                     "UPDATE its_issues SET title=?, description=?, status=?, assignee=?, reportsTo=? WHERE issueId=?")) {
 
             preparedStatement.setString(1, getTitle());
             preparedStatement.setString(2, getDescription());
@@ -270,7 +270,7 @@ public class Issue {
         try (Connection connection = DBConnector.getConnection(ConfigLoader.getDatabaseUrl(),
                 ConfigLoader.getDatabaseUser(), ConfigLoader.getDatabasePassword());
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     "DELETE FROM issues WHERE issueId=?")) {
+                     "DELETE FROM its_issues WHERE issueId=?")) {
 
             preparedStatement.setInt(1, getIssueId());
             int affectedRows = preparedStatement.executeUpdate();
